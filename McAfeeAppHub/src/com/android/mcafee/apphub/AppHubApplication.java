@@ -2,7 +2,6 @@
 package com.android.mcafee.apphub;
 
 import android.app.Application;
-import android.os.Looper;
 
 import com.android.mcafee.apphub.loader.PhotoManager;
 
@@ -34,11 +33,8 @@ public class AppHubApplication extends Application {
 
             @Override
             public void run() {
-                Looper.prepare();
-                PhotoManager manager = (PhotoManager)getApplicationContext().getSystemService(
-                        PhotoManager.PHOTO_SERVICE);
-                Looper.loop();
+                getSystemService(PhotoManager.PHOTO_SERVICE);
             }
-        }).start();;
+        });
     }
 }

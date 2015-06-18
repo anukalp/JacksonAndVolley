@@ -53,7 +53,6 @@ import com.android.volley.toolbox.Volley;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 
 public abstract class PhotoManager implements ComponentCallbacks2 {
 
@@ -78,6 +77,7 @@ public abstract class PhotoManager implements ComponentCallbacks2 {
     public abstract void preparePhotoUris(WeakReference<NetworkImageView> view, String request);
 
     public abstract void startRequest(String url, Listener<AppHubDetailsJsonData[]> response);
+
 }
 
 class PhotoManagerImpl extends PhotoManager implements Callback, ImageCache {
@@ -93,10 +93,10 @@ class PhotoManagerImpl extends PhotoManager implements Callback, ImageCache {
 
     private static final int MESSAGE_PHOTOS_LOADED = 1;
 
-    /**
+/*    *//**
      * Handler for messages sent to the UI thread.
-     */
-    private final Handler mMainThreadHandler = new Handler(this);
+     *//*
+    private final Handler mMainThreadHandler = new Handler(this);*/
 
     private final ConcurrentHashMap<String, WeakReference<ImageView>> mPendingRequests = new ConcurrentHashMap<String, WeakReference<ImageView>>();
 
@@ -116,7 +116,7 @@ class PhotoManagerImpl extends PhotoManager implements Callback, ImageCache {
         mContext = context;
         final ActivityManager am = ((ActivityManager)context
                 .getSystemService(Context.ACTIVITY_SERVICE));
-        mRequestQueue = Volley.newRequestQueue(context);
+
         final float cacheSizeAdjustment = (am.isLowRamDevice()) ? 0.5f : 1.0f;
 
         final int bitmapCacheSize = (int)(cacheSizeAdjustment * BITMAP_CACHE_SIZE);
@@ -130,6 +130,7 @@ class PhotoManagerImpl extends PhotoManager implements Callback, ImageCache {
         File cacheDir = new File(context.getCacheDir(), DEFAULT_CACHE_DIR);
         mJsonCache = new DiskBasedCache(cacheDir);
         mJsonQueue = getRequestQueue();
+        mRequestQueue = Volley.newRequestQueue(mContext);
         mImageLoaderTask = new ImageLoader(mRequestQueue, this);
     }
 
@@ -218,7 +219,7 @@ class PhotoManagerImpl extends PhotoManager implements Callback, ImageCache {
                 Log.i(TAG, "Cache miss " + errorMsg);
                 try {
                     throw new RuntimeException();
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -281,7 +282,7 @@ class PhotoManagerImpl extends PhotoManager implements Callback, ImageCache {
         }
 
         if (!mPendingRequests.isEmpty()) {
-            mMainThreadHandler.sendEmptyMessage(MESSAGE_REQUEST_LOADING);
+            //mMainThreadHandler.sendEmptyMessage(MESSAGE_REQUEST_LOADING);
         }
     }
 
@@ -416,7 +417,7 @@ class PhotoManagerImpl extends PhotoManager implements Callback, ImageCache {
         public void loadPhotosInBackground() {
             obtainPhotoIdsAndUrisToLoad(mPhotoUris);
             loadPhotoUris();
-            mMainThreadHandler.sendEmptyMessage(MESSAGE_PHOTOS_LOADED);
+            //mMainThreadHandler.sendEmptyMessage(MESSAGE_PHOTOS_LOADED);
         }
 
         private void loadPhotoUris() {

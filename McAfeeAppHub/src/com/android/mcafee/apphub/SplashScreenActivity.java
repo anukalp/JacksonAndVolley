@@ -96,25 +96,24 @@ public class SplashScreenActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.splash_screen);
-
         new Thread(new Runnable() {
 
             @Override
             public void run() {
-                Looper.prepare();
                 PhotoManager manager = (PhotoManager)getApplicationContext().getSystemService(
                         PhotoManager.PHOTO_SERVICE);
-                manager.startRequest("http://mcafee.0x10.info/api/app?type=json",createSuccessListener());
-                Looper.loop();
+                manager.startRequest("http://mcafee.0x10.info/api/app?type=json",
+                        createSuccessListener());
             }
         }).start();
- 
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.splash_screen);
+
         new Timer(TAG_SPLASH_SCREEN).scheduleAtFixedRate(mTask,
                 new Date(System.currentTimeMillis()), 300);
     }
-    
+
     private Response.Listener<AppHubDetailsJsonData[]> createSuccessListener() {
         return new Response.Listener<AppHubDetailsJsonData[]>() {
             @Override
